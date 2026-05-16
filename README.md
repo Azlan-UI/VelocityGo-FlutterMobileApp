@@ -111,5 +111,5 @@ Configuration
 
 Author
 
-**Syed Faraz Ibne Saleem**
-- GitHub: [@syedfaraz113](https://github.com/syedfaraz113)
+**Azlan Zafar**
+- GitHub: [@Azlan-UI](https://github.com/Azlan-UI)
