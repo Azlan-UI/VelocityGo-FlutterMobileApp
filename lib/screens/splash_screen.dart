@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
 import 'dart:math' as math;
+import '../models.dart';
+import '../services/auth_service.dart';
+import 'driver_dashboard.dart';
 import 'login_screen.dart';
+import 'rider_dashboard.dart';
+import 'role_selection_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -12,6 +18,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
+  final AuthService _authService = AuthService();
   late AnimationController _controller;
   late AnimationController _rotationController;
   late AnimationController _pulseController;
@@ -19,6 +26,7 @@ class _SplashScreenState extends State<SplashScreen>
   late Animation<double> _scaleAnimation;
   late Animation<double> _slideAnimation;
   double _progress = 0.0;
+  bool _hasNavigated = false;
 
   @override
   void initState() {
@@ -73,26 +81,66 @@ class _SplashScreenState extends State<SplashScreen>
         if (_progress >= 1.0) {
           _progress = 1.0;
           timer.cancel();
-          _navigateToLogin();
+          _navigateNext();
         }
       });
     });
   }
 
-  void _navigateToLogin() {
+  Future<void> _navigateNext() async {
+    if (_hasNavigated) return;
+    _hasNavigated = true;
+
     Future.delayed(const Duration(milliseconds: 500), () {
-      if (!mounted) return;
-      Navigator.of(context).pushReplacement(
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) =>
-          const LoginScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-          transitionDuration: const Duration(milliseconds: 800),
-        ),
-      );
+      _openNextScreen();
     });
+  }
+
+  Future<void> _openNextScreen() async {
+    Widget nextScreen = const LoginScreen();
+
+    try {
+      final user = _authService.currentUser;
+      if (user != null) {
+        nextScreen = await _screenForSignedInUser(user);
+      }
+    } catch (_) {
+      nextScreen = const LoginScreen();
+    }
+
+    if (!mounted) return;
+
+    Navigator.of(context).pushReplacement(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => nextScreen,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        transitionDuration: const Duration(milliseconds: 800),
+      ),
+    );
+  }
+
+  Future<Widget> _screenForSignedInUser(User user) async {
+    final UserModel? userData = await _authService.getUserData(user.uid);
+
+    if (userData == null) {
+      return RoleSelectionScreen(user: user);
+    }
+
+    if (userData.role == 'rider') {
+      return RiderDashboard(user: userData);
+    }
+
+    if (userData.role == 'driver') {
+      final driverData =
+          await _authService.getDriverData(user.uid) ??
+          await _authService.ensureDriverDocument(user);
+
+      return DriverDashboard(user: userData, driver: driverData);
+    }
+
+    return RoleSelectionScreen(user: user);
   }
 
   @override

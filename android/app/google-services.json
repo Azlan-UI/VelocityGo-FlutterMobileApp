@@ -1,156 +1,40 @@
 {
   "project_info": {
-    "project_number": "171715042864",
-    "project_id": "velocitygo-a2fc0",
-    "storage_bucket": "velocitygo-a2fc0.firebasestorage.app"
+    "project_number": "752196246605",
+    "project_id": "velocitygo-azlan",
+    "storage_bucket": "velocitygo-azlan.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:171715042864:android:b6384aa2af31ab957657f5",
+        "mobilesdk_app_id": "1:752196246605:android:9e9999352367d8028dd004",
         "android_client_info": {
           "package_name": "com.example.finalvel"
         }
       },
       "oauth_client": [
         {
-          "client_id": "171715042864-jdcug4un4uqu3dj4ff081gedudkdgjcf.apps.googleusercontent.com",
+          "client_id": "752196246605-tuvpgdtuth7c3invfjbia212shbrc7tv.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD_5vuz0sk2VFpbV1IJI0cqlGdmEbvQanY"
+          "current_key": "AIzaSyBDUNvFssXevUqVUcmzzo1ibsvFmni5dqk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "171715042864-jdcug4un4uqu3dj4ff081gedudkdgjcf.apps.googleusercontent.com",
+              "client_id": "752196246605-tuvpgdtuth7c3invfjbia212shbrc7tv.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "171715042864-jnu6qdui7qgffu8016a800c54b0hsogl.apps.googleusercontent.com",
+              "client_id": "752196246605-0s3p4dioejmb2mafbgk4j0gia4k4om8g.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.velocitygo"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:171715042864:android:becad08e915016bd7657f5",
-        "android_client_info": {
-          "package_name": "com.example.newvel"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "171715042864-msal9h3sf81a168ir1n0vsu7o1j6tjrc.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.newvel",
-            "certificate_hash": "4ba70462566f6c3f58b1b349c6d2659ea0221ae7"
-          }
-        },
-        {
-          "client_id": "171715042864-jdcug4un4uqu3dj4ff081gedudkdgjcf.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyD_5vuz0sk2VFpbV1IJI0cqlGdmEbvQanY"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "171715042864-jdcug4un4uqu3dj4ff081gedudkdgjcf.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "171715042864-jnu6qdui7qgffu8016a800c54b0hsogl.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.velocitygo"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:171715042864:android:39bf96b534a7e1e67657f5",
-        "android_client_info": {
-          "package_name": "com.example.velocitygo"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "171715042864-jdcug4un4uqu3dj4ff081gedudkdgjcf.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyD_5vuz0sk2VFpbV1IJI0cqlGdmEbvQanY"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "171715042864-jdcug4un4uqu3dj4ff081gedudkdgjcf.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "171715042864-jnu6qdui7qgffu8016a800c54b0hsogl.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.velocitygo"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:171715042864:android:5c701486bb13f01f7657f5",
-        "android_client_info": {
-          "package_name": "velocity.go1"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "171715042864-jdcug4un4uqu3dj4ff081gedudkdgjcf.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyD_5vuz0sk2VFpbV1IJI0cqlGdmEbvQanY"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "171715042864-jdcug4un4uqu3dj4ff081gedudkdgjcf.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "171715042864-jnu6qdui7qgffu8016a800c54b0hsogl.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.velocitygo"
+                "bundle_id": "com.example.finalvel"
               }
             }
           ]

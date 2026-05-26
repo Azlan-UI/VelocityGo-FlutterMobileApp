@@ -3,12 +3,19 @@ import 'package:firebase_core/firebase_core.dart';
 import 'screens/splash_screen.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'config/mapbox_config.dart';
+import 'firebase_options.dart';
+import 'services/map_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  IslamabadMapService().initializeMap();
   MapboxConfig.validate();
-  MapboxOptions.setAccessToken(MapboxConfig.accessToken);
+  if (MapboxConfig.hasAccessToken) {
+    MapboxOptions.setAccessToken(MapboxConfig.accessToken);
+  }
   runApp(const VelocityGoApp());
 }
 

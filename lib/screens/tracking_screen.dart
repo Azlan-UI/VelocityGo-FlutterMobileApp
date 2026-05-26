@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'dart:async';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -50,6 +51,8 @@ class _TrackingScreenState extends State<TrackingScreen>
   CircleAnnotationManager? _carCircleManager;
   CircleAnnotation? _carCircle;
 
+  bool get _canUseMapbox => !kIsWeb && MapboxConfig.hasAccessToken;
+
   @override
   void initState() {
     super.initState();
@@ -61,6 +64,11 @@ class _TrackingScreenState extends State<TrackingScreen>
   }
 
   Future<void> _fetchRoute() async {
+    if (!_canUseMapbox) {
+      _useFallbackRoute();
+      return;
+    }
+
     try {
       final pickupLoc = _mapService.locations[widget.ride.pickupLocationIndex];
       final dropLoc = _mapService.locations[widget.ride.dropLocationIndex];
@@ -452,6 +460,59 @@ class _TrackingScreenState extends State<TrackingScreen>
     super.dispose();
   }
 
+  Widget _buildTrackingMapFallback() {
+    final pickup = _mapService.locations[widget.ride.pickupLocationIndex];
+    final drop = _mapService.locations[widget.ride.dropLocationIndex];
+
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF0A0A0F),
+            Color(0xFF16213E),
+            Color(0xFF1A1A2E),
+          ],
+        ),
+      ),
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 28),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.route_rounded,
+                color: Color(0xFF00E5FF),
+                size: 58,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                '${pickup.name} to ${drop.name}',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Live Mapbox tracking is available on mobile.',
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.62),
+                  fontSize: 14,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final distance = _routeDistance > 0
@@ -485,15 +546,17 @@ class _TrackingScreenState extends State<TrackingScreen>
           : Stack(
         children: [
           // Map
-          MapWidget(
-            key: const ValueKey("trackingMap"),
-            styleUri: MapboxStyles.DARK,
-            cameraOptions: CameraOptions(
-              center: Point(coordinates: Position(73.0479, 33.6844)),
-              zoom: 12.0,
-            ),
-            onMapCreated: _onMapCreated,
-          ),
+          _canUseMapbox
+              ? MapWidget(
+                  key: const ValueKey("trackingMap"),
+                  styleUri: MapboxStyles.DARK,
+                  cameraOptions: CameraOptions(
+                    center: Point(coordinates: Position(73.0479, 33.6844)),
+                    zoom: 12.0,
+                  ),
+                  onMapCreated: _onMapCreated,
+                )
+              : _buildTrackingMapFallback(),
 
           // Header with progress
           Positioned(

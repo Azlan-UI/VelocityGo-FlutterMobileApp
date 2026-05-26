@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import '../services/auth_service.dart';
 import '../services/map_service.dart';
 import 'role_selection_screen.dart';
@@ -54,49 +56,16 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     try {
       final userCredential = await _authService.signInWithGoogle();
 
-      if (userCredential != null && userCredential.user != null) {
-        final user = userCredential.user!;
-
-        // Check if user exists in Firestore
-        final userData = await _authService.getUserData(user.uid);
-
-        if (!mounted) return;
-
-        if (userData == null) {
-          // New user - show role selection
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (_) => RoleSelectionScreen(user: user),
-            ),
-          );
-        } else {
-          // Existing user - navigate to appropriate dashboard
-          if (userData.role == 'rider') {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (_) => RiderDashboard(user: userData),
-              ),
-            );
-          } else {
-            final driverData = await _authService.getDriverData(user.uid);
-            if (driverData != null) {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (_) => DriverDashboard(
-                    user: userData,
-                    driver: driverData,
-                  ),
-                ),
-              );
-            }
-          }
-        }
+      if (userCredential?.user == null) {
+        return;
       }
+
+      await _redirectSignedInUser(userCredential!.user!);
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Login failed: ${e.toString()}'),
+          content: Text(_loginErrorMessage(e)),
           backgroundColor: const Color(0xFFFF1744),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -107,6 +76,70 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         setState(() => _isLoading = false);
       }
     }
+  }
+
+  Future<void> _redirectSignedInUser(User user) async {
+    final userData = await _authService.getUserData(user.uid);
+
+    if (!mounted) return;
+
+    if (userData == null) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => RoleSelectionScreen(user: user),
+        ),
+      );
+      return;
+    }
+
+    if (userData.role == 'rider') {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => RiderDashboard(user: userData),
+        ),
+      );
+      return;
+    }
+
+    if (userData.role == 'driver') {
+      final driverData =
+          await _authService.getDriverData(user.uid) ??
+          await _authService.ensureDriverDocument(user);
+
+      if (!mounted) return;
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => DriverDashboard(
+            user: userData,
+            driver: driverData,
+          ),
+        ),
+      );
+      return;
+    }
+
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => RoleSelectionScreen(user: user),
+      ),
+    );
+  }
+
+  String _loginErrorMessage(Object error) {
+    if (error is FirebaseAuthException) {
+      return 'Login failed: ${error.message ?? error.code}';
+    }
+
+    if (error is PlatformException) {
+      final message = error.message ?? error.code;
+      if (message.contains('ApiException: 10')) {
+        return 'Google login setup is missing this app SHA-1/package in Firebase.';
+      }
+      return 'Login failed: $message';
+    }
+
+    return 'Login failed: $error';
   }
 
   @override

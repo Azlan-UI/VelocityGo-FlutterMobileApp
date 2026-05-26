@@ -41,52 +41,53 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCVgik5BcyAcrvhUQRmsQN7C5IFkS7vn0c',
-    appId: '1:171715042864:web:34c8fac50d337f7d7657f5',
-    messagingSenderId: '171715042864',
-    projectId: 'velocitygo-a2fc0',
-    authDomain: 'velocitygo-a2fc0.firebaseapp.com',
-    storageBucket: 'velocitygo-a2fc0.firebasestorage.app',
-    measurementId: 'G-FEP1PS9Q2N',
+    apiKey: 'AIzaSyB4rD14y19MdhjIXyhMmmk0y2aMbSXN-a0',
+    appId: '1:752196246605:web:bb54570a75213d808dd004',
+    messagingSenderId: '752196246605',
+    projectId: 'velocitygo-azlan',
+    authDomain: 'velocitygo-azlan.firebaseapp.com',
+    storageBucket: 'velocitygo-azlan.firebasestorage.app',
+    measurementId: 'G-RMFSVM3078',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyD_5vuz0sk2VFpbV1IJI0cqlGdmEbvQanY',
-    appId: '1:171715042864:android:b6384aa2af31ab957657f5',
-    messagingSenderId: '171715042864',
-    projectId: 'velocitygo-a2fc0',
-    storageBucket: 'velocitygo-a2fc0.firebasestorage.app',
+    apiKey: 'AIzaSyBDUNvFssXevUqVUcmzzo1ibsvFmni5dqk',
+    appId: '1:752196246605:android:9e9999352367d8028dd004',
+    messagingSenderId: '752196246605',
+    projectId: 'velocitygo-azlan',
+    storageBucket: 'velocitygo-azlan.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCMgq3S7LvwnkLyLXU9BV8TZ-EkKa2KRoA',
-    appId: '1:171715042864:ios:43ce36b5506c52547657f5',
-    messagingSenderId: '171715042864',
-    projectId: 'velocitygo-a2fc0',
-    storageBucket: 'velocitygo-a2fc0.firebasestorage.app',
-    androidClientId: '171715042864-msal9h3sf81a168ir1n0vsu7o1j6tjrc.apps.googleusercontent.com',
-    iosClientId: '171715042864-97h24n3pir615mu3rr6ks9p0sofqlp70.apps.googleusercontent.com',
+    apiKey: 'AIzaSyDcRdUmds_xN4WK4iCs6V-HKAPRCo_6CYA',
+    appId: '1:752196246605:ios:9156e24a77cdd5158dd004',
+    messagingSenderId: '752196246605',
+    projectId: 'velocitygo-azlan',
+    storageBucket: 'velocitygo-azlan.firebasestorage.app',
+    androidClientId: '752196246605-je106tcvletahj3rgo5f2vo2t274tnk3.apps.googleusercontent.com',
+    iosClientId: '752196246605-0s3p4dioejmb2mafbgk4j0gia4k4om8g.apps.googleusercontent.com',
     iosBundleId: 'com.example.finalvel',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyCMgq3S7LvwnkLyLXU9BV8TZ-EkKa2KRoA',
-    appId: '1:171715042864:ios:43ce36b5506c52547657f5',
-    messagingSenderId: '171715042864',
-    projectId: 'velocitygo-a2fc0',
-    storageBucket: 'velocitygo-a2fc0.firebasestorage.app',
-    androidClientId: '171715042864-msal9h3sf81a168ir1n0vsu7o1j6tjrc.apps.googleusercontent.com',
-    iosClientId: '171715042864-97h24n3pir615mu3rr6ks9p0sofqlp70.apps.googleusercontent.com',
+    apiKey: 'AIzaSyDcRdUmds_xN4WK4iCs6V-HKAPRCo_6CYA',
+    appId: '1:752196246605:ios:9156e24a77cdd5158dd004',
+    messagingSenderId: '752196246605',
+    projectId: 'velocitygo-azlan',
+    storageBucket: 'velocitygo-azlan.firebasestorage.app',
+    androidClientId: '752196246605-je106tcvletahj3rgo5f2vo2t274tnk3.apps.googleusercontent.com',
+    iosClientId: '752196246605-0s3p4dioejmb2mafbgk4j0gia4k4om8g.apps.googleusercontent.com',
     iosBundleId: 'com.example.finalvel',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyCVgik5BcyAcrvhUQRmsQN7C5IFkS7vn0c',
-    appId: '1:171715042864:web:ea7db93567144baf7657f5',
-    messagingSenderId: '171715042864',
-    projectId: 'velocitygo-a2fc0',
-    authDomain: 'velocitygo-a2fc0.firebaseapp.com',
-    storageBucket: 'velocitygo-a2fc0.firebasestorage.app',
-    measurementId: 'G-3GFFTC5SHW',
+    apiKey: 'AIzaSyB4rD14y19MdhjIXyhMmmk0y2aMbSXN-a0',
+    appId: '1:752196246605:web:51c3dd70577c4ad98dd004',
+    messagingSenderId: '752196246605',
+    projectId: 'velocitygo-azlan',
+    authDomain: 'velocitygo-azlan.firebaseapp.com',
+    storageBucket: 'velocitygo-azlan.firebasestorage.app',
+    measurementId: 'G-YRP3DQMFDT',
   );
+
 }

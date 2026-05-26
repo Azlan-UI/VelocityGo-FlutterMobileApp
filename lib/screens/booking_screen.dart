@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
@@ -60,6 +61,8 @@ class _BookingScreenState extends State<BookingScreen> with SingleTickerProvider
   bool _isSelectingOnMap = false;
   String _mapSelectionMode = '';
   bool _showBottomSheet = false;
+
+  bool get _canUseMapbox => !kIsWeb && MapboxConfig.hasAccessToken;
 
   @override
   void initState() {
@@ -325,15 +328,21 @@ class _BookingScreenState extends State<BookingScreen> with SingleTickerProvider
   }
 
   Future<void> _updateMapAfterSelection() async {
-    await _addLocationMarkers();
+    if (_canUseMapbox) {
+      await _addLocationMarkers();
+    }
 
     if (_selectedPickup != null && _selectedDrop != null) {
-      await _drawRouteUsingMapbox();
+      if (_canUseMapbox) {
+        await _drawRouteUsingMapbox();
+      } else {
+        _setFallbackRouteInfo();
+      }
       setState(() => _showBottomSheet = true);
       _animationController.forward();
-    } else if (_selectedPickup != null) {
+    } else if (_canUseMapbox && _selectedPickup != null) {
       await _focusOnLocation(_selectedPickup!);
-    } else if (_selectedDrop != null) {
+    } else if (_canUseMapbox && _selectedDrop != null) {
       await _focusOnLocation(_selectedDrop!);
     } else {
       if (_routeAnnotation != null && _polylineAnnotationManager != null) {
@@ -343,6 +352,27 @@ class _BookingScreenState extends State<BookingScreen> with SingleTickerProvider
       setState(() => _showBottomSheet = false);
       _animationController.reverse();
     }
+  }
+
+  void _setFallbackRouteInfo() {
+    if (_selectedPickup == null || _selectedDrop == null) return;
+
+    final pickupLoc = _mapService.locations[_selectedPickup!];
+    final dropLoc = _mapService.locations[_selectedDrop!];
+    final distance = _calculateDistance(
+      pickupLoc.latitude,
+      pickupLoc.longitude,
+      dropLoc.latitude,
+      dropLoc.longitude,
+    );
+
+    _fullRoute = [
+      Position(pickupLoc.longitude, pickupLoc.latitude),
+      Position(dropLoc.longitude, dropLoc.latitude),
+    ];
+    _routeDistance = distance;
+    _routeDuration = math.max(300, distance / 9).toDouble();
+    _routeDurationText = _formatDuration(_routeDuration);
   }
 
   Future<void> _focusOnLocation(int index) async {
@@ -478,6 +508,14 @@ class _BookingScreenState extends State<BookingScreen> with SingleTickerProvider
   }
 
   void _enableMapSelection(String mode) {
+    if (!_canUseMapbox) {
+      _showSnackbar(
+        'Map picking is available on mobile. Use search on Chrome.',
+        const Color(0xFFFF9100),
+      );
+      return;
+    }
+
     setState(() {
       _isSelectingOnMap = true;
       _mapSelectionMode = mode;
@@ -618,16 +656,18 @@ class _BookingScreenState extends State<BookingScreen> with SingleTickerProvider
       body: Stack(
         children: [
           // Map with dark style
-          MapWidget(
-            key: const ValueKey("mapWidget"),
-            styleUri: MapboxStyles.DARK,
-            onMapCreated: _onMapCreated,
-            onTapListener: _handleMapTap,
-            cameraOptions: CameraOptions(
-              center: Point(coordinates: Position(73.0479, 33.6844)),
-              zoom: 12.0,
-            ),
-          ),
+          _canUseMapbox
+              ? MapWidget(
+                  key: const ValueKey("mapWidget"),
+                  styleUri: MapboxStyles.DARK,
+                  onMapCreated: _onMapCreated,
+                  onTapListener: _handleMapTap,
+                  cameraOptions: CameraOptions(
+                    center: Point(coordinates: Position(73.0479, 33.6844)),
+                    zoom: 12.0,
+                  ),
+                )
+              : _buildMapFallback(),
 
           // Gradient overlay at top
           Positioned(
@@ -838,6 +878,67 @@ class _BookingScreenState extends State<BookingScreen> with SingleTickerProvider
           ),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMapFallback() {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF0A0A0F),
+            Color(0xFF16213E),
+            Color(0xFF1A1A2E),
+          ],
+        ),
+      ),
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 28),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF00E5FF).withOpacity(0.12),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: const Color(0xFF00E5FF).withOpacity(0.25),
+                  ),
+                ),
+                child: const Icon(
+                  Icons.map_rounded,
+                  color: Color(0xFF00E5FF),
+                  size: 52,
+                ),
+              ),
+              const SizedBox(height: 22),
+              const Text(
+                'Chrome Ride Booking',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Use the pickup and drop-off search fields above to book a ride.',
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.62),
+                  fontSize: 14,
+                  height: 1.4,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );

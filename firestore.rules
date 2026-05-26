@@ -1,0 +1,44 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // User profile (role selection, ratings, ride counts)
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId)
+        && request.resource.data.uid == userId;
+      allow update: if isOwner(userId);
+    }
+
+    // Driver profiles (onboarding, availability, booking updates)
+    match /drivers/{driverId} {
+      allow read: if isSignedIn();
+      allow create: if isOwner(driverId)
+        && request.resource.data.uid == driverId;
+      allow update: if isSignedIn();
+    }
+
+    // Rides (booking, tracking, history)
+    match /rides/{rideId} {
+      allow read: if isSignedIn() && (
+        resource.data.riderUid == request.auth.uid
+        || resource.data.driverUid == request.auth.uid
+      );
+      allow create: if isSignedIn()
+        && request.resource.data.riderUid == request.auth.uid;
+      allow update: if isSignedIn() && (
+        resource.data.riderUid == request.auth.uid
+        || resource.data.driverUid == request.auth.uid
+      );
+    }
+  }
+}
